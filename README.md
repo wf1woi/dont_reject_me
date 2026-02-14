@@ -1,4 +1,4 @@
-# 💕 拒绝TA - 趣味表白页面
+# 💕 别拒绝TA - 趣味表白页面
 
 [English](./README_EN.md) | 中文
 
@@ -53,7 +53,9 @@
 
 ### 方式一：直接使用（推荐）
 
-1. 访问 [配置中心](https://你的用户名.github.io/仓库名/admin.html)
+点击即可开始使用：https://wf1woi.github.io/dont_reject_me
+
+1. 访问 [配置中心](https://wf1woi.github.io/dont_reject_me/admin)
 2. 自定义你的表白内容
 3. 点击"生成分享链接"按钮
 4. 将生成的链接发给TA
@@ -82,14 +84,22 @@
 git clone https://github.com/你的用户名/dont-reject-me.git
 cd dont-reject-me
 
-# 使用 Python 启动本地服务器
+# 方式一：使用 Python 启动服务器（推荐）
 python -m http.server 8080
+# 然后访问 http://localhost:8080
 
-# 或使用 Node.js
+# 方式二：使用 Node.js
 npx http-server -p 8080
 
-# 访问 http://localhost:8080
+# 方式三：直接用浏览器打开 HTML 文件（无需服务器）
+# 直接双击 index.html 即可在浏览器中打开
 ```
+
+> 💡 **为什么需要 HTTP 服务器？**
+> 虽然可以直接双击打开 HTML 文件，但通过服务器访问可以：
+> - 正确加载 URL 参数（如分享的配置链接 `?c=xxx`）
+> - 模拟真实的线上部署环境
+> - 某些浏览器功能（如 localStorage）在 file:// 协议下可能受限
 
 ## 📁 项目结构
 
