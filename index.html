@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>做我女朋友好不好？💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.5s ease;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .question {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: #fff;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+            line-height: 1.5;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 100px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: absolute;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.5);
+            left: 50%;
+            transform: translateX(-130%);
+        }
+
+        .btn-yes:hover {
+            box-shadow: 0 8px 30px rgba(255, 107, 107, 0.7);
+        }
+
+        .btn-no {
+            background: linear-gradient(45deg, #a8a8a8, #c0c0c0);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            left: 50%;
+            transform: translateX(30%);
+            transition: all 0.1s ease;
+        }
+
+        .success-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+            padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .success-message h2 {
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.5;
+        }
+
+        .success-message p {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #ffe4e1;
+            line-height: 1.6;
+        }
+
+        .heart, .star, .confetti, .bubble, .snow, .petal, .meteor, .firework {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .heart { font-size: 20px; animation: fall linear forwards; }
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .star {
+            width: 3px; height: 3px; background: white; border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .confetti {
+            width: 10px; height: 10px;
+            animation: confetti-fall 3s ease forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(1080deg); opacity: 0; }
+        }
+
+        .bubble {
+            width: 20px; height: 20px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+            animation: bubble-rise 4s ease forwards;
+        }
+        @keyframes bubble-rise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+
+        .snow {
+            color: white; font-size: 15px;
+            animation: snow-fall linear forwards;
+        }
+        @keyframes snow-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0.3; }
+        }
+
+        .petal {
+            font-size: 18px;
+            animation: petal-fall linear forwards;
+        }
+        @keyframes petal-fall {
+            0% { transform: translateY(-100vh) rotate(0deg) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg) translateX(100px); opacity: 0; }
+        }
+
+        .meteor {
+            width: 2px; height: 80px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+            animation: meteor-fall 1s linear forwards;
+        }
+        @keyframes meteor-fall {
+            0% { transform: translateY(-100px) translateX(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(100px) rotate(-45deg); opacity: 0; }
+        }
+
+        .firework {
+            width: 5px; height: 5px; border-radius: 50%;
+            animation: firework-explode 1s ease forwards;
+        }
+        @keyframes firework-explode {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(20); opacity: 0.8; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+
+        .emoji-burst {
+            position: fixed; font-size: 30px;
+            animation: burst 1s ease forwards;
+            pointer-events: none; z-index: 1000;
+        }
+        @keyframes burst {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(2) rotate(360deg); opacity: 0; }
+        }
+
+        .counter {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px; border-radius: 20px;
+            color: white; font-size: 0.85rem;
+            backdrop-filter: blur(10px); z-index: 100;
+        }
+
+        .hint {
+            position: fixed;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px; border-radius: 20px;
+            color: white; font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+            animation: bounce 2s ease infinite; z-index: 100;
+            max-width: 90%; text-align: center;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .rainbow-bg { animation: rainbow 5s linear infinite; }
+        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
+        .lightning {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; opacity: 0;
+            pointer-events: none; z-index: 999;
+        }
+        .lightning.flash { animation: lightning-flash 0.2s ease; }
+        @keyframes lightning-flash { 0%, 100% { opacity: 0; } 50% { opacity: 0.8; } }
+
+        .admin-link {
+            position: fixed;
+            bottom: 20px; left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px; border-radius: 15px;
+            color: white; font-size: 0.8rem;
+            text-decoration: none;
+            backdrop-filter: blur(10px); z-index: 100;
+            transition: all 0.3s;
+        }
+        .admin-link:hover { background: rgba(255, 255, 255, 0.3); }
+
+        .btn-cry { animation: cry 0.5s ease infinite; }
+        @keyframes cry {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .btn-invert { filter: invert(1); }
+
+        .shake { animation: shake 0.5s ease; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+
+        /* 渐进震动动画 */
+        @keyframes shake-1 { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @keyframes shake-2 { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        @keyframes shake-3 { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-12px); } 50% { transform: translateX(12px); } 75% { transform: translateX(-12px); } }
+        @keyframes shake-4 { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-15px); } 40% { transform: translateX(15px); } 60% { transform: translateX(-15px); } 80% { transform: translateX(15px); } }
+        @keyframes shake-5 { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-20px) rotate(-2deg); } 40% { transform: translateX(20px) rotate(2deg); } 60% { transform: translateX(-20px) rotate(-2deg); } 80% { transform: translateX(20px) rotate(2deg); } }
+
+        @media (max-width: 480px) {
+            .buttons { gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="lightning" id="lightning"></div>
+    <div class="hint" id="hint">💡 试试点击"拒绝"按钮看看会发生什么~</div>
+    
+    <div class="container">
+        <div id="question-section">
+            <h1 class="question" id="questionText">做我女朋友好不好？💕</h1>
+            <div class="buttons">
+                <button class="btn btn-yes" id="yesBtn">同意 ❤️</button>
+                <button class="btn btn-no" id="noBtn">拒绝 😢</button>
+            </div>
+        </div>
+        
+        <div class="success-message" id="success">
+            <h2 id="successTitle">🎉 耶！我就知道你会同意的！🎉</h2>
+            <p id="successMessage">工资上交，家务全包！❤️</p>
+            <p style="margin-top: 20px; font-size: 1rem;" id="attemptsText">你尝试了拒绝 <span id="attempts">0</span> 次，但最终还是被我的诚意打动啦~</p>
+        </div>
+    </div>
+    
+    <div class="counter" id="counter">拒绝尝试次数: 0</div>
+    <a href="admin.html" class="admin-link" target="_blank">⚙️ 配置中心</a>
+
+    <!-- 尝试从CDN加载LZString压缩库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script>
+        // 如果CDN加载失败，使用简化的Base64回退方案
+        if (typeof LZString === 'undefined') {
+            LZString = {
+                compressToEncodedURIComponent: function(input) {
+                    if (input == null) return "";
+                    var encoded = btoa(unescape(encodeURIComponent(input)));
+                    return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                },
+                decompressFromEncodedURIComponent: function(input) {
+                    if (input == null || input === "") return null;
+                    try {
+                        input = input.replace(/-/g, '+').replace(/_/g, '/');
+                        while (input.length % 4) input += '=';
+                        return decodeURIComponent(escape(atob(input)));
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            };
+        }
+        
+        /** 默认配置 */
+        const defaultConfig = {
+            question: "做我女朋友好不好？💕",
+            yesText: "同意 ❤️",
+            noText: "拒绝 😢",
+            successTitle: "🎉 耶！我就知道你会同意的！🎉",
+            successMessage: "工资上交，家务全包！❤️",
+            hints: [
+                "💡 试试点击\"拒绝\"按钮看看会发生什么~",
+                "😏 想跑？没那么容易！",
+                "🤭 别挣扎了，没用的~",
+                "😅 你已经尝试 {attempts} 次了哦~",
+                "🥺 给我一个机会嘛~",
+                "💕 我会对你很好的！",
+                "🎁 我会给你买好吃的！",
+                "🏠 房产证写你名字！",
+                "💰 工资卡交给你管！",
+                "🍳 我会做饭给你吃！",
+                "🧹 家务我全包了！",
+                "🐶 我会像小狗一样听话！",
+                "💪 我会保护你的！",
+                "🌟 你就是我的小星星！",
+                "😊 答应我嘛~"
+            ],
+            theme: {
+                primaryColor: "#667eea",
+                secondaryColor: "#764ba2",
+                accentColor: "#f093fb",
+                yesButtonColor: "#ff6b6b"
+            },
+            effects: {
+                hearts: true, stars: true, confetti: true,
+                fireworks: false, bubbles: false, rainbow: false,
+                snow: false, petals: false, meteor: false, lightning: false
+            },
+            triggerEffects: {
+                triggerCount: 5,
+                avoidDistance: 100,
+                shake: true, sound: true, cry: true,
+                runaway: true, multiple: true, invert: false
+            },
+            showAdminLink: true
+        };
+
+        /** 全局变量 */
+        let config = defaultConfig;
+        let attempts = 0;
+        let effectsStarted = false;
+        let yesSize = 1;
+        let triggerActivated = false;
+        let multipleClones = [];
+        let emojiBurstTimeout = null;
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cloneWaveCount = 0;
+        const MAX_CLONE_WAVES = 3;
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const counter = document.getElementById('counter');
+        const hint = document.getElementById('hint');
+
+        /** Unicode转Base64 - 处理中文 */
+        function btoaUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+                function toSolidBytes(match, p1) {
+                    return String.fromCharCode('0x' + p1);
+            }));
+        }
+
+        /** Base64转Unicode - 处理中文 */
+        function atobUnicode(str) {
+            return decodeURIComponent(atob(str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
+
+        /** 初始化 */
+        function init() {
+            cloneWaveCount = 0;
+            loadConfig();
+            applyConfig();
+            setupEvents();
+            // 特效延迟启动，等用户第一次拒绝后再启动，避免页面加载时卡顿
+        }
+
+        /** 加载配置 */
+        function loadConfig() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // 键名反向映射表
+            const REVERSE_KEY_MAP = {
+                'q': 'question', 'y': 'yesText', 'n': 'noText', 'st': 'successTitle',
+                'sm': 'successMessage', 'h': 'hints', 't': 'theme', 'pc': 'primaryColor',
+                'sc': 'secondaryColor', 'ac': 'accentColor', 'ybc': 'yesButtonColor',
+                'e': 'effects', 'ht': 'hearts', 'sr': 'stars', 'cf': 'confetti', 'fw': 'fireworks',
+                'bb': 'bubbles', 'rb': 'rainbow', 'sn': 'snow', 'pt': 'petals', 'mt': 'meteors',
+                'lt': 'lightning', 'te': 'triggerEffects', 'tc': 'triggerCount', 'ad': 'avoidDistance', 'sk': 'shake',
+                'sd': 'sound', 'cr': 'cry', 'ra': 'runAway', 'ml': 'multiple', 'iv': 'invert',
+                'sal': 'showAdminLink'
+            };
+            
+            // 分享链接模式 (?c=xxxxx) - 短键名+LZString压缩的配置
+            const configData = urlParams.get('c');
+            if (configData) {
+                try {
+                    // 使用LZString解压
+                    const decoded = LZString.decompressFromEncodedURIComponent(configData);
+                    
+                    if (decoded) {
+                        const shortConfig = JSON.parse(decoded);
+                        // 还原短键名为完整键名
+                        const fullConfig = {};
+                        for (const [key, value] of Object.entries(shortConfig)) {
+                            fullConfig[REVERSE_KEY_MAP[key] || key] = value;
+                        }
+                        config = { ...defaultConfig, ...fullConfig };
+                        return;
+                    }
+                } catch (e) { console.error('分享配置解析失败:', e); }
+            }
+            
+            // 预览模式 (?preview=xxxxx)
+            const previewData = urlParams.get('preview');
+            if (previewData) {
+                try {
+                    config = JSON.parse(decodeURIComponent(previewData));
+                    return;
+                } catch (e) { console.error('预览配置解析失败:', e); }
+            }
+            
+            // 口令模式
+            const token = urlParams.get('t');
+            if (token) {
+                const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+                if (allConfigs[token]) {
+                    config = { ...defaultConfig, ...allConfigs[token] };
+                    return;
+                }
+            }
+        }
+
+        /** 应用配置 */
+        function applyConfig() {
+            document.getElementById('questionText').textContent = config.question;
+            yesBtn.textContent = config.yesText;
+            noBtn.textContent = config.noText;
+            document.getElementById('successTitle').textContent = config.successTitle;
+            document.getElementById('successMessage').textContent = config.successMessage;
+            
+            if (config.theme) {
+                document.body.style.background = `linear-gradient(135deg, ${config.theme.primaryColor} 0%, ${config.theme.secondaryColor} 50%, ${config.theme.accentColor} 100%)`;
+                yesBtn.style.background = `linear-gradient(45deg, ${config.theme.yesButtonColor}, ${lightenColor(config.theme.yesButtonColor, 20)})`;
+            }
+            
+            if (config.effects?.rainbow) document.body.classList.add('rainbow-bg');
+            
+            if (config.showAdminLink === false) {
+                document.querySelector('.admin-link').style.display = 'none';
+            }
+        }
+
+        /** 颜色变亮 */
+        function lightenColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.min(255, (num >> 16) + amt);
+            const G = Math.min(255, ((num >> 8) & 0x00FF) + amt);
+            const B = Math.min(255, (num & 0x0000FF) + amt);
+            return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+        }
+
+        /** 设置事件 */
+        function setupEvents() {
+            yesBtn.addEventListener('click', sayYes);
+            // 拒绝按钮不允许点击，只通过鼠标靠近触发躲避
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
+
+        /** 处理拒绝点击 */
+        function handleNoClick() {
+            // 首次拒绝时启动背景特效
+            if (!effectsStarted) {
+                effectsStarted = true;
+                startEffects();
+            }
+            
+            attempts++;
+            counter.textContent = `拒绝尝试次数: ${attempts}`;
+            updateHint();
+            
+            const triggerCount = config.triggerEffects?.triggerCount || 5;
+            
+            // 检查是否激活触发特效
+            if (attempts >= triggerCount && !triggerActivated) {
+                triggerActivated = true;
+            }
+            
+            // 触发特效
+            if (triggerActivated) {
+                const level = Math.min(5, Math.floor((attempts - triggerCount) / 3) + 1);
+                triggerSpecialEffects(level);
+            }
+            
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = Math.random() * maxX + 'px';
+            noBtn.style.top = Math.random() * maxY + 'px';
+            
+            yesSize += 0.2;
+            yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
+            
+            // 保留变小效果，不重置transform
+            
+            createEmojiBurst(window.innerWidth / 2, window.innerHeight / 2);
+            if (config.effects?.lightning) triggerLightning();
+        }
+
+        /** 移动拒绝按钮 */
+        function moveNoButton(mouseX, mouseY) {
+            const btnRect = noBtn.getBoundingClientRect();
+            const btnCenterX = btnRect.left + btnRect.width / 2;
+            const btnCenterY = btnRect.top + btnRect.height / 2;
+            
+            const distance = Math.sqrt((mouseX - btnCenterX) ** 2 + (mouseY - btnCenterY) ** 2);
+            
+            // 使用配置的躲避检测范围，默认100px
+            const avoidDist = config.triggerEffects?.avoidDistance || 100;
+            if (distance < avoidDist) {
+                attempts++;
+                counter.textContent = `拒绝尝试次数: ${attempts}`;
+                updateHint();
+                
+                const triggerCount = config.triggerEffects?.triggerCount || 5;
+                
+                // 检查是否激活触发特效
+                if (attempts >= triggerCount && !triggerActivated) {
+                    triggerActivated = true;
+                }
+                
+                // 触发特效
+                if (triggerActivated) {
+                    const level = Math.min(5, Math.floor((attempts - triggerCount) / 3) + 1);
+                    triggerSpecialEffects(level);
+                }
+                
+                const maxX = window.innerWidth - btnRect.width - 20;
+                const maxY = window.innerHeight - btnRect.height - 20;
+                let newX = Math.random() * maxX;
+                let newY = Math.random() * maxY;
+                
+                // 渐进增加躲避判定距离
+                const avoidDistance = attempts >= triggerCount 
+                    ? 200 + (attempts - triggerCount) * 30 
+                    : 200;
+                
+                let count = 0;
+                while (Math.sqrt((newX + btnRect.width/2 - mouseX) ** 2 + (newY + btnRect.height/2 - mouseY) ** 2) < avoidDistance && count < 10) {
+                    newX = Math.random() * maxX;
+                    newY = Math.random() * maxY;
+                    count++;
+                }
+                
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = newX + 'px';
+                noBtn.style.top = newY + 'px';
+                // 保留变小效果
+                const currentScale = noBtn._currentScale || 1;
+                noBtn.style.transform = `scale(${currentScale})`;
+                
+                yesSize += 0.15;
+                yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
+                
+                updateHint();
+                createEmojiBurst(mouseX, mouseY);
+                if (config.effects?.lightning) triggerLightning();
+            }
+        }
+
+        /** 更新提示 */
+        function updateHint() {
+            const hints = config.hints || defaultConfig.hints;
+            let hintText = hints[Math.min(attempts, hints.length - 1)];
+            hint.textContent = hintText.replace('{attempts}', attempts);
+        }
+
+        /** 同意 */
+        function sayYes() {
+            // 移除事件监听，防止成功后继续触发
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('touchmove', handleTouchMove);
+            
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('success').style.display = 'flex';
+            document.getElementById('attempts').textContent = attempts;
+            counter.style.display = 'none';
+            hint.style.display = 'none';
+            
+            // 清理特效元素
+            clearTimeout(emojiBurstTimeout);
+            multipleClones.forEach(clone => clone.remove());
+            multipleClones = [];
+            cloneWaveCount = 0;
+            
+            if (config.effects?.confetti) createConfetti();
+            if (config.effects?.fireworks) startFireworks();
+            if (config.effects?.hearts) setInterval(createHeart, 150);
+        }
+
+        /** 鼠标移动处理函数 - 保存引用以便移除 */
+        function handleMouseMove(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            moveNoButton(e.clientX, e.clientY);
+        }
+        
+        /** 触摸移动处理函数 */
+        function handleTouchMove(e) {
+            if (e.touches.length > 0) {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+                moveNoButton(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }
+
+        /** 启动特效 */
+        function startEffects() {
+            const e = config.effects || defaultConfig.effects;
+            // 星星特效立即启动（轻量级）
+            if (e.stars) createStars();
+            // 其他特效延迟启动，避免页面加载卡顿
+            if (e.hearts) setTimeout(() => setInterval(createHeart, 800), 500);
+            if (e.bubbles) setTimeout(() => setInterval(createBubble, 500), 1000);
+            if (e.snow) setTimeout(() => setInterval(createSnow, 300), 1500);
+            if (e.petals) setTimeout(() => setInterval(createPetal, 600), 2000);
+            if (e.meteor) setTimeout(() => setInterval(createMeteor, 2000), 2500);
+        }
+
+        /** 触发拒绝特效 - 渐进版本 */
+        function triggerSpecialEffects(level = 1) {
+            const te = config.triggerEffects || defaultConfig.triggerEffects;
+            
+            // 震动屏幕 - 渐进增强
+            if (te.shake) {
+                const duration = 300 + level * 100;
+                document.body.style.animation = `shake-${level} ${duration}ms ease`;
+                setTimeout(() => document.body.style.animation = '', duration);
+            }
+            
+            // 播放音效 - 渐进变化
+            if (te.sound) {
+                playRejectSound(level);
+            }
+            
+            // 哭泣效果 - 触发后显示
+            if (te.cry) {
+                noBtn.classList.add('btn-cry');
+            }
+            
+            // 分身术 - 渐进增加，最多3波
+            if (te.multiple && cloneWaveCount < MAX_CLONE_WAVES) {
+                createMultipleButtons(level);
+                cloneWaveCount++;
+            }
+            
+            // 变小效果 - 每次触发都变小
+            if (attempts >= 5) {
+                const minScale = 0.15;
+                const currentScale = noBtn._currentScale || 1;
+                const newScale = Math.max(minScale, currentScale * 0.6);
+                noBtn._currentScale = newScale;
+                noBtn.style.transform = `scale(${newScale})`;
+            }
+            
+            // 部分藏入效果 - 等级2以上开始藏入
+            if (level >= 2) {
+                partialHide(level);
+            }
+            
+            // 新增趣味效果
+            if (level >= 2) {
+                // 弹出调皮对话框
+                showTrollDialog(level);
+            }
+            
+            if (level >= 3) {
+                // 按钮文字变化
+                const texts = ['哼！', '讨厌！', '不要！', '就不！', '略略略！'];
+                noBtn.textContent = texts[Math.min(level - 3, texts.length - 1)];
+            }
+            
+            if (level >= 4) {
+                // 背景色警告变化
+                document.body.style.background = `linear-gradient(135deg, 
+                    hsl(${30 + level * 10}, 80%, 60%), 
+                    hsl(${60 + level * 10}, 70%, 50%))`;
+            }
+        }
+        
+        // 部分藏入层级
+        let hideLevel = 0;
+        const MAX_HIDE_LEVEL = 4;
+        
+        /** 部分藏入效果 */
+        function partialHide(level) {
+            hideLevel = Math.min(MAX_HIDE_LEVEL, level);
+            
+            const btnRect = noBtn.getBoundingClientRect();
+            const btnWidth = btnRect.width;
+            const btnHeight = btnRect.height;
+            
+            // 藏入比例：1/4, 1/3, 1/2, 2/3 (更合理的藏入比例)
+            const hideRatios = [0.25, 0.33, 0.5, 0.67];
+            const hideRatio = hideRatios[Math.min(hideLevel - 1, hideRatios.length - 1)];
+            
+            const hideX = btnWidth * hideRatio;
+            const hideY = btnHeight * hideRatio;
+            
+            // 随机选择藏入方向：上、下、左、右
+            const directions = ['top', 'bottom', 'left', 'right'];
+            const direction = directions[Math.floor(Math.random() * directions.length)];
+            
+            noBtn.style.zIndex = '999';
+            
+            // 保留缩小效果
+            const currentScale = noBtn._currentScale || 1;
+            
+            switch(direction) {
+                case 'top':
+                    noBtn.style.top = (-hideY + 10) + 'px';
+                    break;
+                case 'bottom':
+                    noBtn.style.top = (window.innerHeight - btnHeight + hideY - 10) + 'px';
+                    break;
+                case 'left':
+                    noBtn.style.left = (-hideX + 10) + 'px';
+                    break;
+                case 'right':
+                    noBtn.style.left = (window.innerWidth - btnWidth + hideX - 10) + 'px';
+                    break;
+            }
+            
+            // 应用缩小效果
+            noBtn.style.transform = `scale(${currentScale})`;
+        }
+        
+        // 调皮对话框相关变量
+        let currentDialog = null;
+        
+        /** 显示调皮对话框 */
+        function showTrollDialog(level) {
+            // 移除旧对话框
+            if (currentDialog) {
+                currentDialog.remove();
+            }
+            
+            const messages = [
+                '嘿嘿，抓不到我~ 🦊',
+                '再试也没用的~ 😜',
+                '放弃吧少年！💪',
+                '哎呀又空了~ 🎯',
+                '你永远也点不到！✨'
+            ];
+            
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                position: fixed;
+                top: ${Math.random() * 60 + 20}%;
+                left: ${Math.random() * 60 + 20}%;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px 25px;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                font-size: 1.1rem;
+                color: #333;
+                z-index: 10000;
+                animation: dialogPop 0.3s ease;
+                font-family: 'Microsoft YaHei', sans-serif;
+                max-width: 200px;
+                text-align: center;
+            `;
+            dialog.textContent = messages[Math.min(level - 2, messages.length - 1)];
+            
+            // 添加动画
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes dialogPop {
+                    0% { transform: scale(0); opacity: 0; }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(dialog);
+            currentDialog = dialog;
+            
+            // 3秒后消失
+            setTimeout(() => {
+                if (dialog && dialog.parentNode) {
+                    dialog.style.transition = 'opacity 0.5s, transform 0.5s';
+                    dialog.style.opacity = '0';
+                    dialog.style.transform = 'scale(0.8)';
+                    setTimeout(() => dialog.remove(), 500);
+                }
+            }, 3000);
+        }
+
+        /** 播放拒绝音效 - 渐进版本 */
+        function playRejectSound(level) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                // 频率随等级变化
+                const baseFreq = 300 - level * 30;
+                oscillator.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(baseFreq * 0.3, audioCtx.currentTime + 0.3);
+                
+                // 音量随等级增加
+                const volume = 0.2 + level * 0.08;
+                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        /** 创建多个分身按钮 - 诱饵版本 */
+        function createMultipleButtons(level) {
+            // 清除旧的分身
+            multipleClones.forEach(clone => {
+                if (clone._moveInterval) clearInterval(clone._moveInterval);
+                if (clone._hoverInterval) clearInterval(clone._hoverInterval);
+                clone.remove();
+            });
+            multipleClones = [];
+            
+            // 分身数量：3-10个
+            const numClones = Math.min(3 + level * 2, 10);
+            // 逃跑次数后变成同意：3-5次，等级越高越快屈服
+            const escapeLimit = Math.max(3, 6 - level);
+            
+            for (let i = 0; i < numClones; i++) {
+                const clone = noBtn.cloneNode(true);
+                clone.id = '';
+                clone.style.position = 'fixed';
+                clone.style.left = Math.random() * (window.innerWidth - 120) + 'px';
+                clone.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+                clone.style.transform = 'none';
+                clone.style.zIndex = '1001';
+                
+                // 初始显示拒绝
+                clone.textContent = '拒绝 😢';
+                clone.style.background = 'linear-gradient(45deg, #a8a8a8, #c0c0c0)';
+                clone.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.2)';
+                
+                // 诱饵状态
+                clone._escapeCount = 0;
+                clone._escapeLimit = escapeLimit;
+                clone._isTamed = false;
+                clone._createdTime = Date.now();
+                // 初始快速逃跑速度
+                clone._escapeSpeed = Math.max(50, 150 - level * 15);
+                
+                // 点击处理 - 点击直接成功！（诱饵效果）
+                clone.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // 点击诱饵直接成功！
+                    sayYes();
+                };
+                
+                // 鼠标靠近时处理
+                const checkDistance = () => {
+                    if (!document.contains(clone)) {
+                        if (clone._hoverInterval) clearInterval(clone._hoverInterval);
+                        return;
+                    }
+                    
+                    const rect = clone.getBoundingClientRect();
+                    const cloneX = rect.left + rect.width / 2;
+                    const cloneY = rect.top + rect.height / 2;
+                    
+                    const distance = Math.sqrt((mouseX - cloneX) ** 2 + (mouseY - cloneY) ** 2);
+                    
+                    // 如果已被"驯服"，不再逃跑，只做诱饵
+                    if (clone._isTamed) {
+                        if (distance < 120) {
+                            clone.textContent = '好的 ❤️';
+                            clone.style.background = 'linear-gradient(45deg, #4CAF50, #8BC34A)';
+                            clone.style.boxShadow = '0 5px 20px rgba(76, 175, 80, 0.5)';
+                        } else {
+                            clone.textContent = '拒绝 😢';
+                            clone.style.background = 'linear-gradient(45deg, #a8a8a8, #c0c0c0)';
+                            clone.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.2)';
+                        }
+                        return;
+                    }
+                    
+                    // 逃跑模式：距离<60就逃跑
+                    if (distance < 60) {
+                        clone._escapeCount++;
+                        
+                        // 达到逃跑次数后，驯服它！
+                        if (clone._escapeCount >= clone._escapeLimit) {
+                            clone._isTamed = true;
+                            // 驯服时给一个甜蜜的动画
+                            clone.style.transition = 'all 0.3s ease';
+                            clone.textContent = '好的 ❤️';
+                            clone.style.background = 'linear-gradient(45deg, #4CAF50, #8BC34A)';
+                            clone.style.boxShadow = '0 5px 20px rgba(76, 175, 80, 0.5)';
+                            return;
+                        }
+                        
+                        // 每次逃跑速度变慢
+                        clone._escapeSpeed = Math.min(300, clone._escapeSpeed + 30);
+                        
+                        const maxX = window.innerWidth - 120;
+                        const maxY = window.innerHeight - 60;
+                        clone.style.transition = `all ${clone._escapeSpeed}ms ease`;
+                        clone.style.left = Math.random() * maxX + 'px';
+                        clone.style.top = Math.random() * maxY + 'px';
+                    }
+                    
+                    // 距离<120时显示诱饵意图
+                    if (distance < 120) {
+                        // 逃跑中显示警告
+                        if (clone._escapeCount > 0) {
+                            clone.textContent = '哼！😠';
+                            clone.style.background = 'linear-gradient(45deg, #ff6b6b, #ff8e8e)';
+                        }
+                    } else {
+                        clone.textContent = '拒绝 😢';
+                        clone.style.background = 'linear-gradient(45deg, #a8a8a8, #c0c0c0)';
+                    }
+                };
+                
+                clone._hoverInterval = setInterval(checkDistance, 100);
+                
+                document.body.appendChild(clone);
+                multipleClones.push(clone);
+                
+                // 8秒后自动消失
+                setTimeout(() => {
+                    if (document.contains(clone)) {
+                        clone.style.transition = 'opacity 0.5s, transform 0.5s';
+                        clone.style.opacity = '0';
+                        clone.style.transform = 'scale(0)';
+                        setTimeout(() => {
+                            if (clone._hoverInterval) clearInterval(clone._hoverInterval);
+                            clone.remove();
+                            const idx = multipleClones.indexOf(clone);
+                            if (idx > -1) multipleClones.splice(idx, 1);
+                        }, 500);
+                    }
+                }, 8000);
+            }
+        }
+
+        /** 创建特效函数 */
+        function createStars() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(star);
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['💕', '💖', '💗', '💝', '❤️', '💘'][Math.floor(Math.random() * 6)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        function createEmojiBurst(x, y) {
+            const emojis = ['💕', '💖', '💗', '✨', '🎉', '❤️', '💝', '💫'];
+            for (let i = 0; i < 8; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'emoji-burst';
+                emoji.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                emoji.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+                emoji.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
+                document.body.appendChild(emoji);
+                setTimeout(() => emoji.remove(), 1000);
+            }
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c9b1ff'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.className = 'confetti';
+                    c.style.left = Math.random() * 100 + '%';
+                    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.style.left = Math.random() * 100 + '%';
+            const size = Math.random() * 20 + 10;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 4000);
+        }
+
+        function createSnow() {
+            const snow = document.createElement('div');
+            snow.className = 'snow';
+            snow.innerHTML = '❄';
+            snow.style.left = Math.random() * 100 + '%';
+            snow.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            snow.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            document.body.appendChild(snow);
+            setTimeout(() => snow.remove(), 7000);
+        }
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.innerHTML = ['🌸', '🌺', '🌷', '🌹'][Math.floor(Math.random() * 4)];
+            petal.style.left = Math.random() * 100 + '%';
+            petal.style.animationDuration = (Math.random() * 4 + 3) + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 7000);
+        }
+
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.className = 'meteor';
+            meteor.style.left = Math.random() * 100 + '%';
+            meteor.style.top = '-100px';
+            document.body.appendChild(meteor);
+            setTimeout(() => meteor.remove(), 1000);
+        }
+
+        function triggerLightning() {
+            const lightning = document.getElementById('lightning');
+            lightning.classList.remove('flash');
+            void lightning.offsetWidth;
+            lightning.classList.add('flash');
+        }
+
+        function startFireworks() {
+            const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c9b1ff'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const fw = document.createElement('div');
+                    fw.className = 'firework';
+                    fw.style.left = Math.random() * 100 + '%';
+                    fw.style.top = (Math.random() * 40 + 20) + '%';
+                    fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    fw.style.boxShadow = `0 0 20px ${fw.style.background}`;
+                    document.body.appendChild(fw);
+                    setTimeout(() => fw.remove(), 1000);
+                }, i * 200);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>

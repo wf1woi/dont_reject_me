@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表白页面配置中心 💕</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container {
+            max-width: 900px; margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px; padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 { text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2rem; }
+        .subtitle { text-align: center; color: #999; margin-bottom: 30px; font-size: 0.9rem; }
+        .section { margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px; }
+        .section-title { color: #667eea; font-size: 1.2rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: #555; margin-bottom: 5px; font-weight: 500; }
+        input[type="text"], textarea, select {
+            width: 100%; padding: 12px; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 1rem; transition: border-color 0.3s; font-family: inherit;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: #667eea; }
+        textarea { min-height: 100px; resize: vertical; }
+        .color-picker-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .color-item { display: flex; align-items: center; gap: 10px; }
+        .color-item input[type="color"] { width: 50px; height: 40px; border: none; border-radius: 8px; cursor: pointer; }
+        .effects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+        .effect-item { display: flex; align-items: center; gap: 8px; padding: 10px; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .effect-item:hover { background: #667eea; color: white; }
+        .effect-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .btn {
+            padding: 12px 30px; border: none; border-radius: 25px;
+            font-size: 1rem; cursor: pointer; transition: all 0.3s; font-weight: bold; margin: 5px;
+        }
+        .btn-primary { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5); }
+        .btn-success { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 107, 107, 0.5); }
+        .btn-secondary { background: #e0e0e0; color: #555; }
+        .btn-secondary:hover { background: #d0d0d0; }
+        .btn-danger { background: #ff6b6b; color: white; }
+        .button-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .link-display { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; word-break: break-all; border: 2px dashed #667eea; }
+        .link-display a { color: #667eea; text-decoration: none; font-weight: 500; }
+        .link-display a:hover { text-decoration: underline; }
+        .token-input-group { display: flex; gap: 10px; }
+        .token-input-group input { flex: 1; }
+        .saved-list { margin-top: 20px; }
+        .saved-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .saved-item-info { flex: 1; }
+        .saved-item-token { font-weight: bold; color: #667eea; }
+        .saved-item-date { font-size: 0.85rem; color: #999; }
+        .toast {
+            position: fixed; top: 20px; right: 20px; padding: 15px 25px;
+            background: #4caf50; color: white; border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px); transition: transform 0.3s; z-index: 1000;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { background: #f44336; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab { padding: 10px 20px; background: #e0e0e0; border: none; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-weight: 500; }
+        .tab.active { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 1.5rem; }
+            .section { padding: 15px; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💕 表白页面配置中心</h1>
+        <p class="subtitle">创建专属于你的表白页面，让爱意更加独特</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('create')">创建新配置</button>
+            <button class="tab" onclick="switchTab('manage')">管理已保存</button>
+        </div>
+
+        <div id="create-tab" class="tab-content active">
+            <div class="section">
+                <h3 class="section-title">🔑 口令设置</h3>
+                <div class="form-group">
+                    <label>输入口令（用于生成专属链接）</label>
+                    <div class="token-input-group">
+                        <input type="text" id="token" placeholder="例如：love2024、mylove123、5201314">
+                        <button class="btn btn-secondary" onclick="generateRandomToken()">随机生成</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">💬 语句配置</h3>
+                <div class="form-group">
+                    <label>表白问题</label>
+                    <input type="text" id="question" placeholder="做我女朋友好不好？💕">
+                </div>
+                <div class="form-group">
+                    <label>同意按钮文字</label>
+                    <input type="text" id="yesText" placeholder="同意 ❤️">
+                </div>
+                <div class="form-group">
+                    <label>拒绝按钮文字</label>
+                    <input type="text" id="noText" placeholder="拒绝 😢">
+                </div>
+                <div class="form-group">
+                    <label>成功标题</label>
+                    <input type="text" id="successTitle" placeholder="🎉 耶！我就知道你会同意的！🎉">
+                </div>
+                <div class="form-group">
+                    <label>成功消息</label>
+                    <input type="text" id="successMessage" placeholder="工资上交，家务全包！❤️">
+                </div>
+                <div class="form-group">
+                    <label>提示语（每行一条，支持 {attempts} 占位符）</label>
+                    <textarea id="hints" placeholder="💡 试试点击"拒绝"按钮看看会发生什么~"></textarea>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">🎨 主题颜色</h3>
+                <div class="color-picker-group">
+                    <div class="color-item">
+                        <input type="color" id="primaryColor" value="#667eea">
+                        <label>主色调</label>
+                    </div>
+                    <div class="color-item">
+                        <input type="color" id="secondaryColor" value="#764ba2">
+                        <label>次要色</label>
+                    </div>
+                    <div class="color-item">
+                        <input type="color" id="accentColor" value="#f093fb">
+                        <label>强调色</label>
+                    </div>
+                    <div class="color-item">
+                        <input type="color" id="yesButtonColor" value="#ff6b6b">
+                        <label>同意按钮</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">✨ 特效选择</h3>
+                <div class="effects-grid">
+                    <label class="effect-item"><input type="checkbox" id="effect-hearts" checked><span>💕 爱心飘落</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-stars" checked><span>⭐ 星星闪烁</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-confetti" checked><span>🎊 彩纸庆祝</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-fireworks"><span>🎆 烟花绽放</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-bubbles"><span>🫧 气泡上升</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-rainbow"><span>🌈 彩虹光效</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-snow"><span>❄️ 雪花飘落</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-petals"><span>🌸 花瓣飘落</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-meteor"><span>☄️ 流星划过</span></label>
+                    <label class="effect-item"><input type="checkbox" id="effect-lightning"><span>⚡ 闪电效果</span></label>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3 class="section-title">⚙️ 其他设置</h3>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="showAdminLink" checked>
+                        <span>显示配置中心入口</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>拒绝触发特效次数</label>
+                    <input type="number" id="triggerCount" value="5" min="1" max="100" style="width: 100px;">
+                    <span style="color: #999; font-size: 0.9rem; margin-left: 10px;">次后触发有趣的效果</span>
+                </div>
+                <div class="form-group">
+                    <label>躲避检测范围</label>
+                    <input type="number" id="avoidDistance" value="100" min="50" max="300" style="width: 100px;">
+                    <span style="color: #999; font-size: 0.9rem; margin-left: 10px;">px（鼠标靠近按钮多少像素触发躲避）</span>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-shake" checked>
+                        <span>📳 拒绝时震动屏幕</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-sound" checked>
+                        <span>🔊 拒绝时播放音效</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-cry" checked>
+                        <span>😢 拒绝按钮哭泣效果</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-runaway">
+                        <span>🏃 拒绝按钮越跑越快</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-multiple" checked>
+                        <span>👥 拒绝按钮分身术</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="effect-item">
+                        <input type="checkbox" id="effect-invert" checked>
+                        <span>🎭 拒绝按钮反色</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="saveConfig()">💾 保存配置</button>
+                <button class="btn btn-success" onclick="previewConfig()">👁️ 预览效果</button>
+                <button class="btn btn-info" onclick="generateShareLink()">🔗 生成分享链接</button>
+                <button class="btn btn-secondary" onclick="resetForm()">🔄 重置表单</button>
+            </div>
+
+            <div class="link-display" id="linkDisplay" style="display: none;">
+                <strong>你的专属链接：</strong><br>
+                <a id="generatedLink" href="#" target="_blank"></a>
+            </div>
+        </div>
+
+        <div id="manage-tab" class="tab-content">
+            <div class="section">
+                <h3 class="section-title">📋 已保存的配置</h3>
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="exportAllConfigs()">📤 导出全部配置</button>
+                    <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📥 导入配置</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importConfig(event)">
+                </div>
+                <div id="savedList" class="saved-list">
+                    <p style="color: #999; text-align: center;">暂无保存的配置</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- 尝试从CDN加载LZString压缩库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script>
+        // 如果CDN加载失败，使用简化的Base64回退方案
+        if (typeof LZString === 'undefined') {
+            LZString = {
+                compressToEncodedURIComponent: function(input) {
+                    if (input == null) return "";
+                    var encoded = btoa(unescape(encodeURIComponent(input)));
+                    return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                },
+                decompressFromEncodedURIComponent: function(input) {
+                    if (input == null || input === "") return null;
+                    try {
+                        input = input.replace(/-/g, '+').replace(/_/g, '/');
+                        while (input.length % 4) input += '=';
+                        return decodeURIComponent(escape(atob(input)));
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            };
+        }
+
+        /** 键名映射表 - 用于缩短URL */
+        const KEY_MAP = {
+            question: 'q', yesText: 'y', noText: 'n', successTitle: 'st',
+            successMessage: 'sm', hints: 'h', theme: 't', primaryColor: 'pc',
+            secondaryColor: 'sc', accentColor: 'ac', yesButtonColor: 'ybc',
+            effects: 'e', hearts: 'ht', stars: 'sr', confetti: 'cf', fireworks: 'fw',
+            bubbles: 'bb', rainbow: 'rb', snow: 'sn', petals: 'pt', meteors: 'mt',
+            lightning: 'lt', triggerEffects: 'te', triggerCount: 'tc', avoidDistance: 'ad', shake: 'sk',
+            sound: 'sd', cry: 'cr', runAway: 'ra', multiple: 'ml', invert: 'iv',
+            showAdminLink: 'sal'
+        };
+        const REVERSE_KEY_MAP = Object.fromEntries(Object.entries(KEY_MAP).map(([k, v]) => [v, k]));
+        
+        /** 默认值 */
+        const defaultHints = `💡 试试点击"拒绝"按钮看看会发生什么~
+😏 想跑？没那么容易！
+🤭 别挣扎了，没用的~
+😅 你已经尝试 {attempts} 次了哦~
+🥺 给我一个机会嘛~
+💕 我会对你很好的！
+🎁 我会给你买好吃的！
+🏠 房产证写你名字！
+💰 工资卡交给你管！
+🍳 我会做饭给你吃！
+🧹 家务我全包了！
+🐶 我会像小狗一样听话！
+💪 我会保护你的！
+🌟 你就是我的小星星！
+😊 答应我嘛~`;
+
+        /** 初始化 */
+        document.addEventListener('DOMContentLoaded', () => { loadSavedList(); loadDefaultValues(); });
+
+        /** 加载默认值 */
+        function loadDefaultValues() {
+            document.getElementById('question').value = '做我女朋友好不好？💕';
+            document.getElementById('yesText').value = '同意 ❤️';
+            document.getElementById('noText').value = '拒绝 😢';
+            document.getElementById('successTitle').value = '🎉 耶！我就知道你会同意的！🎉';
+            document.getElementById('successMessage').value = '工资上交，家务全包！❤️';
+            document.getElementById('hints').value = defaultHints;
+        }
+
+        /** 切换标签 */
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            if (tabName === 'manage') loadSavedList();
+        }
+
+        /** 生成随机口令 */
+        function generateRandomToken() {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            document.getElementById('token').value = Array(8).fill(0).map(() => chars[Math.floor(Math.random() * chars.length)]).join('');
+        }
+
+        /** 获取表单配置 */
+        function getConfigFromForm() {
+            const hintsText = document.getElementById('hints').value;
+            return {
+                question: document.getElementById('question').value,
+                yesText: document.getElementById('yesText').value,
+                noText: document.getElementById('noText').value,
+                successTitle: document.getElementById('successTitle').value,
+                successMessage: document.getElementById('successMessage').value,
+                hints: hintsText.split('\n').filter(h => h.trim()),
+                theme: {
+                    primaryColor: document.getElementById('primaryColor').value,
+                    secondaryColor: document.getElementById('secondaryColor').value,
+                    accentColor: document.getElementById('accentColor').value,
+                    yesButtonColor: document.getElementById('yesButtonColor').value
+                },
+                effects: {
+                    hearts: document.getElementById('effect-hearts').checked,
+                    stars: document.getElementById('effect-stars').checked,
+                    confetti: document.getElementById('effect-confetti').checked,
+                    fireworks: document.getElementById('effect-fireworks').checked,
+                    bubbles: document.getElementById('effect-bubbles').checked,
+                    rainbow: document.getElementById('effect-rainbow').checked,
+                    snow: document.getElementById('effect-snow').checked,
+                    petals: document.getElementById('effect-petals').checked,
+                    meteor: document.getElementById('effect-meteor').checked,
+                    lightning: document.getElementById('effect-lightning').checked
+                },
+                triggerEffects: {
+                    triggerCount: parseInt(document.getElementById('triggerCount').value) || 5,
+                    avoidDistance: parseInt(document.getElementById('avoidDistance').value) || 100,
+                    shake: document.getElementById('effect-shake').checked,
+                    sound: document.getElementById('effect-sound').checked,
+                    cry: document.getElementById('effect-cry').checked,
+                    runaway: document.getElementById('effect-runaway').checked,
+                    multiple: document.getElementById('effect-multiple').checked,
+                    invert: document.getElementById('effect-invert').checked
+                },
+                showAdminLink: document.getElementById('showAdminLink').checked,
+                createdAt: new Date().toISOString()
+            };
+        }
+
+        /** 保存配置 */
+        function saveConfig() {
+            const token = document.getElementById('token').value.trim();
+            if (!token) return showToast('请输入口令！', true);
+            if (!/^[a-zA-Z0-9\u4e00-\u9fa5]+$/.test(token)) return showToast('口令只能包含字母、数字和中文！', true);
+
+            const config = getConfigFromForm();
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            allConfigs[token] = config;
+            localStorage.setItem('loveConfigs', JSON.stringify(allConfigs));
+
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+            const link = `${baseUrl}?t=${encodeURIComponent(token)}`;
+            
+            document.getElementById('generatedLink').href = link;
+            document.getElementById('generatedLink').textContent = link;
+            document.getElementById('linkDisplay').style.display = 'block';
+
+            showToast('配置保存成功！');
+            loadSavedList();
+        }
+
+        /** 预览 */
+        function previewConfig() {
+            const config = getConfigFromForm();
+            const configStr = encodeURIComponent(JSON.stringify(config));
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+            window.open(`${baseUrl}?preview=${configStr}`, '_blank');
+        }
+
+        /** Unicode转Base64 - 处理中文 */
+        function btoaUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+                function toSolidBytes(match, p1) {
+                    return String.fromCharCode('0x' + p1);
+            }));
+        }
+
+        /** 生成分享链接 - 可分享给其他人 */
+        function generateShareLink() {
+            const config = getConfigFromForm();
+            // 移除 createdAt 字段（不需要分享）
+            const { createdAt, ...shareConfig } = config;
+            
+            // 使用短键名压缩 JSON
+            const shortConfig = {};
+            for (const [key, value] of Object.entries(shareConfig)) {
+                shortConfig[KEY_MAP[key] || key] = value;
+            }
+            
+            const jsonStr = JSON.stringify(shortConfig);
+            // 使用LZString压缩
+            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+            const shareLink = `${baseUrl}?c=${compressed}`;
+            
+            document.getElementById('generatedLink').href = shareLink;
+            document.getElementById('generatedLink').textContent = shareLink;
+            document.getElementById('linkDisplay').style.display = 'block';
+            
+            showToast('分享链接生成成功！');
+        }
+
+        /** 重置 */
+        function resetForm() {
+            loadDefaultValues();
+            document.getElementById('token').value = '';
+            document.getElementById('linkDisplay').style.display = 'none';
+            ['primaryColor', 'secondaryColor', 'accentColor', 'yesButtonColor'].forEach(id => {
+                document.getElementById(id).value = { primaryColor: '#667eea', secondaryColor: '#764ba2', accentColor: '#f093fb', yesButtonColor: '#ff6b6b' }[id];
+            });
+            ['hearts', 'stars', 'confetti'].forEach(id => document.getElementById(`effect-${id}`).checked = true);
+            ['fireworks', 'bubbles', 'rainbow', 'snow', 'petals', 'meteor', 'lightning'].forEach(id => document.getElementById(`effect-${id}`).checked = false);
+            document.getElementById('showAdminLink').checked = true;
+            document.getElementById('triggerCount').value = 5;
+            document.getElementById('avoidDistance').value = 100;
+            ['effect-shake', 'effect-sound', 'effect-cry', 'effect-multiple', 'effect-invert'].forEach(id => document.getElementById(id).checked = true);
+            document.getElementById('effect-runaway').checked = false;
+            showToast('表单已重置！');
+        }
+
+        /** 加载已保存列表 */
+        function loadSavedList() {
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            const listContainer = document.getElementById('savedList');
+            const tokens = Object.keys(allConfigs);
+
+            if (!tokens.length) {
+                listContainer.innerHTML = '<p style="color: #999; text-align: center;">暂无保存的配置</p>';
+                return;
+            }
+
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', 'index.html');
+            listContainer.innerHTML = tokens.map(token => {
+                const config = allConfigs[token];
+                const date = new Date(config.createdAt).toLocaleString('zh-CN');
+                const link = `${baseUrl}?t=${encodeURIComponent(token)}`;
+                return `
+                    <div class="saved-item">
+                        <div class="saved-item-info">
+                            <div class="saved-item-token">口令：${token}</div>
+                            <div class="saved-item-date">创建时间：${date}</div>
+                            <div style="margin-top: 5px; font-size: 0.9rem; color: #666;">${config.question}</div>
+                        </div>
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9rem;" onclick="window.open('${link}', '_blank')">打开</button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;" onclick="editConfig('${token}')">编辑</button>
+                            <button class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;" onclick="exportSingleConfig('${token}')">导出</button>
+                            <button class="btn btn-danger" style="padding: 8px 15px; font-size: 0.9rem;" onclick="deleteConfig('${token}')">删除</button>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        /** 编辑配置 */
+        function editConfig(token) {
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            const config = allConfigs[token];
+            if (!config) return showToast('配置不存在！', true);
+
+            switchTab('create');
+            document.getElementById('token').value = token;
+            document.getElementById('question').value = config.question || '';
+            document.getElementById('yesText').value = config.yesText || '';
+            document.getElementById('noText').value = config.noText || '';
+            document.getElementById('successTitle').value = config.successTitle || '';
+            document.getElementById('successMessage').value = config.successMessage || '';
+            document.getElementById('hints').value = (config.hints || []).join('\n');
+            
+            if (config.theme) {
+                document.getElementById('primaryColor').value = config.theme.primaryColor || '#667eea';
+                document.getElementById('secondaryColor').value = config.theme.secondaryColor || '#764ba2';
+                document.getElementById('accentColor').value = config.theme.accentColor || '#f093fb';
+                document.getElementById('yesButtonColor').value = config.theme.yesButtonColor || '#ff6b6b';
+            }
+            
+            if (config.effects) {
+                Object.keys(config.effects).forEach(key => {
+                    const checkbox = document.getElementById(`effect-${key}`);
+                    if (checkbox) checkbox.checked = config.effects[key];
+                });
+            }
+
+            if (config.showAdminLink !== undefined) {
+                document.getElementById('showAdminLink').checked = config.showAdminLink;
+            }
+
+            if (config.triggerEffects) {
+                document.getElementById('triggerCount').value = config.triggerEffects.triggerCount || 5;
+                document.getElementById('avoidDistance').value = config.triggerEffects.avoidDistance || 100;
+                if (config.triggerEffects.shake !== undefined) document.getElementById('effect-shake').checked = config.triggerEffects.shake;
+                if (config.triggerEffects.sound !== undefined) document.getElementById('effect-sound').checked = config.triggerEffects.sound;
+                if (config.triggerEffects.cry !== undefined) document.getElementById('effect-cry').checked = config.triggerEffects.cry;
+                if (config.triggerEffects.runaway !== undefined) document.getElementById('effect-runaway').checked = config.triggerEffects.runaway;
+                if (config.triggerEffects.multiple !== undefined) document.getElementById('effect-multiple').checked = config.triggerEffects.multiple;
+                if (config.triggerEffects.invert !== undefined) document.getElementById('effect-invert').checked = config.triggerEffects.invert;
+            }
+            
+            showToast('配置已加载，可进行编辑！');
+        }
+
+        /** 删除配置 */
+        function deleteConfig(token) {
+            if (!confirm(`确定要删除口令 "${token}" 的配置吗？`)) return;
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            delete allConfigs[token];
+            localStorage.setItem('loveConfigs', JSON.stringify(allConfigs));
+            showToast('配置已删除！');
+            loadSavedList();
+        }
+
+        /** 提示消息 */
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        /** 导出全部配置 */
+        function exportAllConfigs() {
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            if (Object.keys(allConfigs).length === 0) {
+                return showToast('没有可导出的配置！', true);
+            }
+            
+            const blob = new Blob([JSON.stringify(allConfigs, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `love_configs_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('配置导出成功！');
+        }
+
+        /** 导出单个配置 */
+        function exportSingleConfig(token) {
+            const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+            const config = allConfigs[token];
+            if (!config) return showToast('配置不存在！', true);
+            
+            const blob = new Blob([JSON.stringify({ [token]: config }, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `love_config_${token}_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('配置导出成功！');
+        }
+
+        /** 导入配置 */
+        function importConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    const allConfigs = JSON.parse(localStorage.getItem('loveConfigs') || '{}');
+                    
+                    let count = 0;
+                    for (const key in imported) {
+                        if (imported[key] && typeof imported[key] === 'object') {
+                            allConfigs[key] = imported[key];
+                            count++;
+                        }
+                    }
+                    
+                    localStorage.setItem('loveConfigs', JSON.stringify(allConfigs));
+                    loadSavedList();
+                    showToast(`成功导入 ${count} 个配置！`);
+                } catch (err) {
+                    showToast('导入失败，文件格式错误！', true);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
