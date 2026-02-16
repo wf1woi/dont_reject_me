@@ -291,7 +291,7 @@
 </head>
 <body>
     <div class="lightning" id="lightning"></div>
-    <div class="hint" id="hint">💡 试试点击（手机可点按/滑动）"拒绝"按钮看看会发生什么~</div>
+    <div class="hint" id="hint">💡 手机可点按 / 长按 / 左滑试试"拒绝"按钮~</div>
     
     <div class="container">
         <div id="question-section">
@@ -409,6 +409,12 @@
         const ESCAPE_COOLDOWN_MS = isTouchDevice ? 180 : 80;
         let lastEscapeAt = 0;
         const MAX_YES_SCALE = isTouchDevice ? 2.6 : 4;
+        const LONG_PRESS_MS = 550;
+        const SWIPE_THRESHOLD = 70;
+        let longPressTimer = null;
+        let longPressTriggered = false;
+        let touchStartX = null;
+        let touchStartY = null;
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const counter = document.getElementById('counter');
@@ -524,6 +530,8 @@
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('touchstart', handleTouchStart, { passive: false });
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd, { passive: false });
+            document.addEventListener('touchcancel', clearLongPress);
         }
 
 
@@ -533,8 +541,24 @@
             yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
         }
 
+
+        /** 轻触觉反馈（支持设备才触发） */
+        function vibrate(duration = 16) {
+            if (isTouchDevice && navigator.vibrate) {
+                navigator.vibrate(duration);
+            }
+        }
+
+        function clearLongPress() {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+        }
+
         /** 处理拒绝点击 */
         function handleNoClick() {
+            vibrate(12);
             // 首次拒绝时启动背景特效
             if (!effectsStarted) {
                 effectsStarted = true;
@@ -645,10 +669,14 @@
 
         /** 同意 */
         function sayYes() {
+            vibrate(25);
             // 移除事件监听，防止成功后继续触发
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+            document.removeEventListener('touchcancel', clearLongPress);
+            clearLongPress();
             
             document.getElementById('question-section').style.display = 'none';
             document.getElementById('success').style.display = 'flex';
@@ -680,7 +708,23 @@
                 const t = e.touches[0];
                 mouseX = t.clientX;
                 mouseY = t.clientY;
+                touchStartX = t.clientX;
+                touchStartY = t.clientY;
+                longPressTriggered = false;
+
                 moveNoButton(t.clientX, t.clientY);
+
+                // 长按拒绝按钮：更符合移动端玩法
+                const target = e.target;
+                const onNoBtn = target === noBtn || (target && typeof target.closest === 'function' && target.closest('#noBtn'));
+                if (onNoBtn) {
+                    clearLongPress();
+                    longPressTimer = setTimeout(() => {
+                        longPressTriggered = true;
+                        handleNoClick();
+                        hint.textContent = '😈 长按也没用，还是抓不到我~';
+                    }, LONG_PRESS_MS);
+                }
             }
             // 防止页面滚动导致交互失真
             e.preventDefault();
@@ -693,7 +737,56 @@
                 mouseX = t.clientX;
                 mouseY = t.clientY;
                 moveNoButton(t.clientX, t.clientY);
+
+                // 移动距离太大则取消长按
+                if (touchStartX !== null && touchStartY !== null) {
+                    const dx = t.clientX - touchStartX;
+                    const dy = t.clientY - touchStartY;
+                    if (Math.hypot(dx, dy) > 18) clearLongPress();
+                }
             }
+            e.preventDefault();
+        }
+
+        /** 触摸结束：加入左右滑玩法 */
+        function handleTouchEnd(e) {
+            if (!isTouchDevice) return;
+
+            const t = e.changedTouches && e.changedTouches[0];
+            if (!t || touchStartX === null || touchStartY === null) {
+                clearLongPress();
+                return;
+            }
+
+            const dx = t.clientX - touchStartX;
+            const dy = t.clientY - touchStartY;
+            const absX = Math.abs(dx);
+            const absY = Math.abs(dy);
+
+            clearLongPress();
+
+            // 长按已经触发就不再执行滑动逻辑
+            if (longPressTriggered) {
+                longPressTriggered = false;
+                touchStartX = null;
+                touchStartY = null;
+                return;
+            }
+
+            // 横向滑动优先：左滑=继续拒绝挑战；右滑=快速同意
+            if (absX > SWIPE_THRESHOLD && absX > absY * 1.2) {
+                if (dx < 0) {
+                    handleNoClick();
+                    hint.textContent = '👈 左滑拒绝？我继续躲~';
+                } else {
+                    hint.textContent = '👉 右滑表示心动中...';
+                    setTimeout(sayYes, 120);
+                }
+                vibrate(18);
+            }
+
+            touchStartX = null;
+            touchStartY = null;
             e.preventDefault();
         }
 
