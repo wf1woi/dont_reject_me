@@ -279,13 +279,19 @@
         @keyframes shake-5 { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-20px) rotate(-2deg); } 40% { transform: translateX(20px) rotate(2deg); } 60% { transform: translateX(-20px) rotate(-2deg); } 80% { transform: translateX(20px) rotate(2deg); } }
 
         @media (max-width: 480px) {
-            .buttons { gap: 15px; }
+            .buttons { gap: 15px; min-height: 120px; }
+            .btn { padding: 14px 26px; font-size: 1rem; }
+            .btn-yes { transform: translateX(-120%); }
+            .btn-no { transform: translateX(20%); }
+            .counter, .admin-link { bottom: 12px; }
+            .counter { right: 12px; }
+            .admin-link { left: 12px; }
         }
     </style>
 </head>
 <body>
     <div class="lightning" id="lightning"></div>
-    <div class="hint" id="hint">💡 试试点击"拒绝"按钮看看会发生什么~</div>
+    <div class="hint" id="hint">💡 试试点击（手机可点按/滑动）"拒绝"按钮看看会发生什么~</div>
     
     <div class="container">
         <div id="question-section">
@@ -399,6 +405,10 @@
         let mouseY = window.innerHeight / 2;
         let cloneWaveCount = 0;
         const MAX_CLONE_WAVES = 3;
+        const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+        const ESCAPE_COOLDOWN_MS = isTouchDevice ? 180 : 80;
+        let lastEscapeAt = 0;
+        const MAX_YES_SCALE = isTouchDevice ? 2.6 : 4;
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const counter = document.getElementById('counter');
@@ -512,7 +522,15 @@
             // 当关闭 runAway 时，允许点击拒绝按钮触发交互
             noBtn.addEventListener('click', handleNoClick);
             document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('touchstart', handleTouchStart, { passive: false });
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        }
+
+
+        /** 更新同意按钮尺寸（移动端限制最大缩放，避免挤出屏幕） */
+        function bumpYesButton(delta) {
+            yesSize = Math.min(MAX_YES_SCALE, yesSize + delta);
+            yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
         }
 
         /** 处理拒绝点击 */
@@ -546,8 +564,7 @@
             noBtn.style.left = Math.random() * maxX + 'px';
             noBtn.style.top = Math.random() * maxY + 'px';
             
-            yesSize += 0.2;
-            yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
+            bumpYesButton(0.2);
             
             // 保留变小效果，不重置transform
             
@@ -567,6 +584,9 @@
             // 使用配置的躲避检测范围，默认100px
             const avoidDist = config.triggerEffects?.avoidDistance || 100;
             if (distance < avoidDist) {
+                const now = Date.now();
+                if (now - lastEscapeAt < ESCAPE_COOLDOWN_MS) return;
+                lastEscapeAt = now;
                 attempts++;
                 counter.textContent = `拒绝尝试次数: ${attempts}`;
                 updateHint();
@@ -608,8 +628,7 @@
                 const currentScale = noBtn._currentScale || 1;
                 noBtn.style.transform = `scale(${currentScale})`;
                 
-                yesSize += 0.15;
-                yesBtn.style.transform = `translateX(-130%) scale(${yesSize})`;
+                bumpYesButton(0.15);
                 
                 updateHint();
                 createEmojiBurst(mouseX, mouseY);
@@ -628,6 +647,7 @@
         function sayYes() {
             // 移除事件监听，防止成功后继续触发
             document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('touchstart', handleTouchStart);
             document.removeEventListener('touchmove', handleTouchMove);
             
             document.getElementById('question-section').style.display = 'none';
@@ -654,13 +674,27 @@
             moveNoButton(e.clientX, e.clientY);
         }
         
+        /** 触摸开始：手机端点按也能触发追逐 */
+        function handleTouchStart(e) {
+            if (e.touches.length > 0) {
+                const t = e.touches[0];
+                mouseX = t.clientX;
+                mouseY = t.clientY;
+                moveNoButton(t.clientX, t.clientY);
+            }
+            // 防止页面滚动导致交互失真
+            e.preventDefault();
+        }
+
         /** 触摸移动处理函数 */
         function handleTouchMove(e) {
             if (e.touches.length > 0) {
-                mouseX = e.touches[0].clientX;
-                mouseY = e.touches[0].clientY;
-                moveNoButton(e.touches[0].clientX, e.touches[0].clientY);
+                const t = e.touches[0];
+                mouseX = t.clientX;
+                mouseY = t.clientY;
+                moveNoButton(t.clientX, t.clientY);
             }
+            e.preventDefault();
         }
 
         /** 启动特效 */
