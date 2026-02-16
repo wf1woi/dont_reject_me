@@ -309,20 +309,33 @@
     <!-- 尝试从CDN加载LZString压缩库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script>
-        // 如果CDN加载失败，使用简化的Base64回退方案
+        // 如果CDN加载失败，使用 UTF-8 安全的 Base64 回退方案（避免 escape/unescape）
         if (typeof LZString === 'undefined') {
+            const utf8ToBase64 = (str) => {
+                const bytes = new TextEncoder().encode(str);
+                let binary = '';
+                for (const b of bytes) binary += String.fromCharCode(b);
+                return btoa(binary);
+            };
+
+            const base64ToUtf8 = (b64) => {
+                const binary = atob(b64);
+                const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+                return new TextDecoder().decode(bytes);
+            };
+
             LZString = {
-                compressToEncodedURIComponent: function(input) {
+                compressToEncodedURIComponent(input) {
                     if (input == null) return "";
-                    var encoded = btoa(unescape(encodeURIComponent(input)));
+                    const encoded = utf8ToBase64(String(input));
                     return encoded.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
                 },
-                decompressFromEncodedURIComponent: function(input) {
+                decompressFromEncodedURIComponent(input) {
                     if (input == null || input === "") return null;
                     try {
                         input = input.replace(/-/g, '+').replace(/_/g, '/');
                         while (input.length % 4) input += '=';
-                        return decodeURIComponent(escape(atob(input)));
+                        return base64ToUtf8(input);
                     } catch (e) {
                         return null;
                     }
@@ -391,21 +404,6 @@
         const counter = document.getElementById('counter');
         const hint = document.getElementById('hint');
 
-        /** Unicode转Base64 - 处理中文 */
-        function btoaUnicode(str) {
-            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-                function toSolidBytes(match, p1) {
-                    return String.fromCharCode('0x' + p1);
-            }));
-        }
-
-        /** Base64转Unicode - 处理中文 */
-        function atobUnicode(str) {
-            return decodeURIComponent(atob(str).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-        }
-
         /** 初始化 */
         function init() {
             cloneWaveCount = 0;
@@ -427,7 +425,7 @@
                 'e': 'effects', 'ht': 'hearts', 'sr': 'stars', 'cf': 'confetti', 'fw': 'fireworks',
                 'bb': 'bubbles', 'rb': 'rainbow', 'sn': 'snow', 'pt': 'petals', 'mt': 'meteors',
                 'lt': 'lightning', 'te': 'triggerEffects', 'tc': 'triggerCount', 'ad': 'avoidDistance', 'sk': 'shake',
-                'sd': 'sound', 'cr': 'cry', 'ra': 'runAway', 'ml': 'multiple', 'iv': 'invert',
+                'sd': 'sound', 'cr': 'cry', 'ra': 'runaway', 'ml': 'multiple', 'iv': 'invert',
                 'sal': 'showAdminLink'
             };
             
@@ -444,6 +442,13 @@
                         const fullConfig = {};
                         for (const [key, value] of Object.entries(shortConfig)) {
                             fullConfig[REVERSE_KEY_MAP[key] || key] = value;
+                        }
+                        // 兼容旧版短键映射（runAway -> runaway）
+                        if (fullConfig.runAway !== undefined && fullConfig.runaway === undefined) {
+                            fullConfig.runaway = fullConfig.runAway;
+                        }
+                        if (fullConfig.triggerEffects?.runAway !== undefined && fullConfig.triggerEffects?.runaway === undefined) {
+                            fullConfig.triggerEffects.runaway = fullConfig.triggerEffects.runAway;
                         }
                         config = { ...defaultConfig, ...fullConfig };
                         return;
@@ -504,7 +509,8 @@
         /** 设置事件 */
         function setupEvents() {
             yesBtn.addEventListener('click', sayYes);
-            // 拒绝按钮不允许点击，只通过鼠标靠近触发躲避
+            // 当关闭 runAway 时，允许点击拒绝按钮触发交互
+            noBtn.addEventListener('click', handleNoClick);
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
         }
@@ -551,6 +557,7 @@
 
         /** 移动拒绝按钮 */
         function moveNoButton(mouseX, mouseY) {
+            if (config.triggerEffects?.runaway === false) return;
             const btnRect = noBtn.getBoundingClientRect();
             const btnCenterX = btnRect.left + btnRect.width / 2;
             const btnCenterY = btnRect.top + btnRect.height / 2;
